@@ -30,8 +30,5 @@ public:
     void* DescarteDoInicio();
     void IncorporeNoFinal(void*);
     void* DescarteDoFinal();
-    int Contem(void*) const;
-    void Descarte(void*);
-    char *NaFormaDeString() const;
 };
 #endif

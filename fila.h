@@ -1,6 +1,6 @@
 #ifndef FILA
 #define FILA
-#include <lista.h>
+#include "lista.h"
 
 class Fila : private Lista
 {

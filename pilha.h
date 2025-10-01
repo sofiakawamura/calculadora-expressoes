@@ -1,6 +1,6 @@
 #ifndef PILHA
 #define PILHA
-#include <lista.h>
+#include "lista.h"
 
 class Pilha : private Lista
 {
