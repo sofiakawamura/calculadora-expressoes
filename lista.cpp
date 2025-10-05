@@ -199,7 +199,7 @@ void* Lista::DescarteDoInicio()
     if (Inicio == NULL)
     {
         Lista::Erro = 1;
-        return;
+        return NULL;
     }
     void* R = Inicio->Info;
     pNo P = Inicio;
@@ -240,7 +240,7 @@ void* Lista::DescarteDoFinal()
     if (Inicio == NULL)
     {
         Lista::Erro = 1;
-        return;
+        return NULL;
     }
     void* R;
     if (Inicio->Prox == NULL)
@@ -260,51 +260,5 @@ void* Lista::DescarteDoFinal()
         A->Prox = NULL;
         delete P;
     }
-    return R;
-}
-void Lista::Descarte(void* I)
-{
-    Lista::Erro = 0;
-    if (!this->Valida || this->Inicio == NULL)
-    {
-        Lista::Erro = 1;
-        return;
-    }
-    pNo A, P;
-    int Achou = 0, Prim = 1;
-    for (A = NULL, P = this->Inicio;; A = P, P = P->Prox, Prim = 0)
-    {
-        if (P == NULL)
-            break;
-        if (P->Info == I)
-        {
-            Achou = 1;
-            break;
-        }
-    }
-    if (!Achou)
-    {
-        Lista::Erro = 1;
-        return;
-    }
-    if (Prim)
-        Inicio = P->Prox;
-    else
-        A->Prox = P->Prox;
-    free(P);
-}
-
-char *Lista::NaFormaDeString() const
-{
-    Lista::Erro = 0;
-    if (!this->Valida)
-    {
-        Lista::Erro = 1;
-        return NULL;
-    }
-    static char R[1025];
-    strcpy(R, "{");
-    strcat(R, Lista::NaFormaDeString());
-    strcat(R, "}");
     return R;
 }

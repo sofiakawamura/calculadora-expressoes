@@ -4,7 +4,7 @@
 class Expressao
 {
 public:
-    char* removeEspacos(char* entrada);
+    int removeEspacos(char* entrada, char* saida);
 private:
     bool ehNumero(char caracter);
     bool ehAritmetico(char caracter);
