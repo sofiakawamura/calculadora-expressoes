@@ -37,23 +37,21 @@ bool ShuntingYard::esquerdaAssociativo(Token* t) {
 }
 
 void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
-    Pilha operadores;  // pilha de operadores
+    Pilha operadores;
     Token* atual;
 
     for (int i = 0; i < tamanho; i++) {
         atual = &entrada[i];
 
-        // 1️⃣ — Operando (número ou booleano)
         if (atual->tipo == Token::NUMERO || atual->tipo == Token::BOOLEANO) {
             saida->Enfileirar(atual);
         }
 
-        // 2️⃣ — Operador
         else if (ehOperador(atual)) {
             // validação extra: impede operador duplo isolado (ex: "true | false")
             if ((strcmp(atual->valor, "|") == 0 || strcmp(atual->valor, "&") == 0) &&
                 (i + 1 >= tamanho || strcmp(entrada[i + 1].valor, atual->valor) != 0)) {
-                throw 2; // token desconhecido
+                throw 2;
             }
 
             while (!operadores.EstaVazia()) {
@@ -74,12 +72,10 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
             operadores.Empilhar(atual);
         }
 
-        // 3️⃣ — Parênteses abrindo
         else if (atual->tipo == Token::PARENTESES && strcmp(atual->valor, "(") == 0) {
             operadores.Empilhar(atual);
         }
 
-        // 4️⃣ — Parênteses fechando
         else if (atual->tipo == Token::PARENTESES && strcmp(atual->valor, ")") == 0) {
             bool achouAbre = false;
             while (!operadores.EstaVazia()) {
@@ -93,19 +89,18 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
                 }
             }
             if (!achouAbre)
-                throw 1; // parênteses desbalanceados
+                throw 1;
         }
 
         else {
-            throw 2; // token desconhecido
+            throw 2;
         }
     }
 
-    // 5️⃣ — Esvazia a pilha
     while (!operadores.EstaVazia()) {
         Token* topo = (Token*) operadores.Desempilhar();
         if (topo->tipo == Token::PARENTESES)
-            throw 1; // parênteses desbalanceados
+            throw 1;
         saida->Enfileirar(topo);
     }
 }

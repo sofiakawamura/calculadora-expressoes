@@ -5,6 +5,7 @@
 #include "pilha.h"
 #include "lexer.h"
 #include "shunting_yard.h"
+#include "evaluator.h"
 
 int main() {
     // para rodar
@@ -16,6 +17,7 @@ int main() {
         char expressao[2000];
         Lexer lexer;
         ShuntingYard sy;
+        Evaluator evaluator;
 
         // ler expressão
         printf("Digite uma expressao: ");
@@ -31,14 +33,13 @@ int main() {
         int tamanho;
         lexer.tokenizacao(expressao, &tokens, &tamanho);
 
+        // shunting yard
         Fila saida;
         sy.shuntingYard(tokens, tamanho, &saida);
 
-        while (!saida.EstaVazia()) {
-            Token* t = (Token*) saida.Desenfileirar();
-            printf("%s ", t->valor);
-        }
-        printf("\n");
+        // resultado
+        char* resultado = evaluator.avaliarPosfixa(&saida);
+        printf("Resultado: %s\n", resultado);
     }
     catch (int e) {
         if (e == 2) {
