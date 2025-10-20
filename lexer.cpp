@@ -89,7 +89,7 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
                 throw 7;
             }
             if (lendoBooleano > 0) {
-                throw 7;
+                throw 2;
             }
             i++;
             continue;
@@ -178,30 +178,6 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
             }
         }
 
-        // lógicos
-        else if (ehLogico(c)) {
-            Token tk;
-            tk.tipo = Token::LOGICO;
-
-            if (c == '&' && expressao[i+1] == '&') {
-                tk.valor = strdup("&&");
-                i += 2;
-            }
-            else if (c == '|' && expressao[i+1] == '|') {
-                tk.valor = strdup("||");
-                i += 2;
-            }
-            else if (c == '!') {
-                tk.valor = strdup("!");
-                i++;
-            }
-            else {
-                throw 2;
-            }
-
-            (*tokens)[(*tamanho)++] = tk;
-        }
-
         // relacionais
         else if (ehRelacional(c)) {
             Token tk;
@@ -222,6 +198,30 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 tk.valor[1] = '\0';
                 i++;
             } 
+            else {
+                throw 2; // token desconhecido
+            }
+
+            (*tokens)[(*tamanho)++] = tk;
+        }
+
+        // lógicos
+        else if (ehLogico(c)) {
+            Token tk;
+            tk.tipo = Token::LOGICO;
+
+            if (c == '&' && expressao[i+1] == '&') {
+                tk.valor = strdup("&&");
+                i += 2;
+            }
+            else if (c == '|' && expressao[i+1] == '|') {
+                tk.valor = strdup("||");
+                i += 2;
+            }
+            else if (c == '!') {
+                tk.valor = strdup("!");
+                i++;
+            }
             else {
                 throw 2;
             }
