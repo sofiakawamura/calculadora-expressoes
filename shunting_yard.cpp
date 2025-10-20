@@ -6,7 +6,7 @@
 #include "pilha.h"
 #include "fila.h"
 
-// retorna a precedência do operador 
+// retorna a precedência do operador (classifica por faixas numéricas)
 int ShuntingYard::precedencia(Token* t) {
     if (strcmp(t->valor, "!") == 0) return 5;
     if (strcmp(t->valor, "^") == 0) return 4;
@@ -40,52 +40,61 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
     Pilha operadores;
     Token* atual;
 
+    // percorre todos os tokens
     for (int i = 0; i < tamanho; i++) {
         atual = &entrada[i];
 
+        // numeros e booleanos vão direto para a fila
         if (atual->tipo == Token::NUMERO || atual->tipo == Token::BOOLEANO) {
             saida->Enfileirar(atual);
         }
 
         else if (ehOperador(atual)) {
-            // validação extra: impede operador duplo isolado (ex: "true | false")
+            // impede operador duplo isolado
             if ((strcmp(atual->valor, "|") == 0 || strcmp(atual->valor, "&") == 0) &&
                 (i + 1 >= tamanho || strcmp(entrada[i + 1].valor, atual->valor) != 0)) {
-                throw 3; // operador sem operandos suficientes
+                throw 2; // operador inválido (desconhecido)
             }
 
+            // verifica as precidências dos operadores
             while (!operadores.EstaVazia()) {
                 Token* topo = (Token*) operadores.Topo();
 
+                // abre parênteses é descartado quando é desempilhado
                 if (topo->tipo == Token::PARENTESES && strcmp(topo->valor, "(") == 0)
                     break;
 
                 int p1 = precedencia(atual);
                 int p2 = precedencia(topo);
 
+                // precedência do operador na pilha é maior -> move para a fila
                 if (p2 > p1 || (p2 == p1 && esquerdaAssociativo(atual))) {
                     saida->Enfileirar(operadores.Desempilhar());
-                } else {
-                    break;
+                } 
+                else {
+                    break; // desempilha até a precedência ser menor
                 }
             }
-            operadores.Empilhar(atual);
+            operadores.Empilhar(atual); 
         }
 
+        // empilha parênteses de abertura
         else if (atual->tipo == Token::PARENTESES && strcmp(atual->valor, "(") == 0) {
             operadores.Empilhar(atual);
         }
 
+        // parênteses de fechamento -> desempilha até achar de abertura
         else if (atual->tipo == Token::PARENTESES && strcmp(atual->valor, ")") == 0) {
             bool achouAbre = false;
             while (!operadores.EstaVazia()) {
                 Token* topo = (Token*) operadores.Topo();
                 if (topo->tipo == Token::PARENTESES && strcmp(topo->valor, "(") == 0) {
-                    operadores.Desempilhar(); // descarta '('
+                    operadores.Desempilhar(); // descarta "(" e sai do loop
                     achouAbre = true;
                     break;
-                } else {
-                    saida->Enfileirar(operadores.Desempilhar());
+                } 
+                else {
+                    saida->Enfileirar(operadores.Desempilhar()); // move o operador da pilha para a fila
                 }
             }
             if (!achouAbre)
@@ -97,6 +106,7 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
         }
     }
 
+    // termina de enfileirar operadores
     while (!operadores.EstaVazia()) {
         Token* topo = (Token*) operadores.Desempilhar();
         if (topo->tipo == Token::PARENTESES)
