@@ -6,17 +6,17 @@
 #include "pilha.h"
 #include "fila.h"
 
+// retorna a precedência do operador 
 int ShuntingYard::precedencia(Token* t) {
-    if (strcmp(t->valor, "!") == 0) return 5;        // unário
+    if (strcmp(t->valor, "!") == 0) return 5;
     if (strcmp(t->valor, "^") == 0) return 4;
     if (strcmp(t->valor, "*") == 0 || strcmp(t->valor, "/") == 0) return 3;
     if (strcmp(t->valor, "+") == 0 || strcmp(t->valor, "-") == 0) return 2;
-    if (strcmp(t->valor, ">") == 0 || strcmp(t->valor, "<") == 0 ||
-        strcmp(t->valor, ">=") == 0 || strcmp(t->valor, "<=") == 0) return 1;
+    if (strcmp(t->valor, ">") == 0 || strcmp(t->valor, "<") == 0 || strcmp(t->valor, ">=") == 0 || strcmp(t->valor, "<=") == 0) return 1;
     if (strcmp(t->valor, "==") == 0 || strcmp(t->valor, "!=") == 0) return 1;
     if (strcmp(t->valor, "&&") == 0) return 0;
     if (strcmp(t->valor, "||") == 0) return -1;
-    return -2; // não é operador
+    return -2;
 }
 
 bool ShuntingYard::ehOperador(Token* t) {

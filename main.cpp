@@ -8,16 +8,13 @@
 #include "evaluator.h"
 
 int main() {
-    // para rodar
-    // g++ main.cpp fila.cpp ... -o calculadora
-    // .\calculadora.exe
-
     Lexer lexer;
     ShuntingYard sy;
     Evaluator evaluator;
 
     while (true) {
         try {
+            // selecionar operação
             int opcao;
             printf("\n\nSelecione uma opcao:\n");
             printf("1. Digitar uma expressao\n");
@@ -44,12 +41,11 @@ int main() {
 
             // remover espaços
             lexer.removeEspacos(entrada, expressao);
-            printf("Expressao sem espacos: %s\n", expressao);
+            printf("Expressao sem espacos: %s", expressao);
 
             // tokenizar
             Token* tokens;
             int tamanho;
-            printf("Tokenizando...\n");
             lexer.tokenizacao(expressao, &tokens, &tamanho);
 
             // exibir infixa
@@ -72,7 +68,7 @@ int main() {
 
             // resultado
             char* resultado = evaluator.avaliarPosfixa(&saida);
-            printf("\nResultado: %s\n", resultado);
+            printf("\n\nResultado: %s\n", resultado);
 
             // retornar para menu
             printf("Pressione qualquer tecla para voltar ao menu principal...");
@@ -80,21 +76,21 @@ int main() {
         }
         catch (int e) {
             if (e == 1) {
-                printf("Erro: parênteses desbalanceados!\n");
+                printf("\n\nErro: parênteses desbalanceados!\n");
             } else if (e == 2) {
-                printf("Erro: token desconhecido!\n");
+                printf("\n\nErro: token desconhecido!\n");
             } else if (e == 3) {
-                printf("Erro: operador sem operandos suficientes!\n");
+                printf("\n\nErro: operador sem operandos suficientes!\n");
             } else if (e == 4) {
-                printf("Erro: tipo incompatível!\n");
+                printf("\n\nErro: tipo incompatível!\n");
             } else if (e == 5) {
-                printf("Erro: divisão por 0!\n");
+                printf("\n\nErro: divisão por 0!\n");
             } else if (e == 6) {
-                printf("Erro: comparação entre tipos diferentes!\n");
+                printf("\n\nErro: comparação entre tipos diferentes!\n");
             } else if (e == 7) {
-                printf("Erro: expressao mal formatada!\n");
+                printf("\n\nErro: expressao mal formatada!\n");
             } else {
-                printf("Erro desconhecido!\n");
+                printf("\n\nErro desconhecido!\n");
             }
             printf("Pressione qualquer tecla para voltar ao menu principal...");
             getchar();

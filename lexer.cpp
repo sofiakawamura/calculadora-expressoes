@@ -61,10 +61,12 @@ bool Lexer::ehLetraBool(char caracter) {
 }
 
 void Lexer::removeEspacos(char* entrada, char* saida) {
-    int i = 0;
-    int j = 0;
+    int i = 0; // indice de entrada
+    int j = 0; // indice de saida
+    // flags
     int lendoNumero = 0;
     int lendoBooleano = 0;
+    // leitura de palavras "true" e "false"
     char possivelBool[6] = {0};
 
     while (entrada[i] != '\0') {
@@ -74,10 +76,11 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
             char anterior = (i > 0) ? entrada[i - 1] : '\0';
             char proximo = entrada[i + 1];
 
-            // espaços entre números, operadores ou booleanos
+            // verifica se há espaços entre números
             if (ehNumero(anterior) && ehNumero(proximo)) {
                 throw 7;
             }
+            // verifica se há espaços entre operadores relacionais ou lógicos duplos
             if (
                 (anterior == '>' && proximo == '=') ||
                 (anterior == '<' && proximo == '=') ||
@@ -88,6 +91,7 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
             ) {
                 throw 7;
             }
+            // começou a ler booleano e encontrou espaço -> erro 
             if (lendoBooleano > 0) {
                 throw 2;
             }
@@ -95,19 +99,23 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
             continue;
         }
 
+        // atualiza flags
         if (ehNumero(atual)) {
             lendoNumero = 1;
         } else {
             lendoNumero = 0;
         }
         if (ehLetraBool(atual)) {
+            // reseta a palavra atualmente armazenada
             if (lendoBooleano == 0) {
                 memset(possivelBool, 0, sizeof(possivelBool));
             }
+            // atualiza palavra sendo lida
             if (lendoBooleano < 5) {
                 possivelBool[lendoBooleano++] = atual;
                 possivelBool[lendoBooleano] = '\0';
 
+                // terminou de ler
                 if (strcmp(possivelBool, "true") == 0 || strcmp(possivelBool, "false") == 0) {
                     lendoBooleano = 0;
                 }
@@ -115,12 +123,15 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
             else {
                 throw 7;
             }
-        } else {
+        } 
+        // adicionou letra inválida dentro do booleano
+        else {
             if (lendoBooleano > 0) {
                 throw 7;
             }
         }
 
+        // não faz parte de caracteres válidos
         if (!(ehNumero(atual) || ehAritmetico(atual) || ehRelacional(atual) || ehLogico(atual) || ehParenteses(atual) || ehLetraBool(atual))) {
             throw 2;
         }
@@ -132,6 +143,7 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
     saida[j] = '\0';
 }
 
+// categoriza tokens
 void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
     int i = 0;
     int capacidade = 70; // capacidade inicial
@@ -256,7 +268,7 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
             throw 2;
         }
 
-        // aumenta o vetor
+        // aumenta o vetor se ultrapassar a capacidade
         if (*tamanho >= capacidade) {
             capacidade *= 2;
             *tokens = (Token*) realloc(*tokens, capacidade * sizeof(Token));

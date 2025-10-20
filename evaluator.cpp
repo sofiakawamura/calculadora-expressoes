@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <math.h>
 
+// conversão de strings booleanas
 bool Evaluator::ehBoolStr(const char* v) {
     return (strcmp(v, "true") == 0 || strcmp(v, "false") == 0);
 }
