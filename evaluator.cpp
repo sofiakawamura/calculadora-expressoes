@@ -43,7 +43,11 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             char* b = (char*) pilha.Desempilhar();
             char* a = (char*) pilha.Desempilhar();
             if (!a || !b) 
-                throw Exception(3, tk->valor);
+                throw Exception(3, tk->valor);  // operador sem operandos suficientes
+
+            // verificação de tipo
+            if (ehBoolStr(a) || ehBoolStr(b))
+                throw Exception(4, tk->valor); // tipo incompatível (operadores aritméticos aplicados a booleanos)
 
             // converte para double
             double opA = atof(a);
@@ -62,7 +66,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                     break;
                 case '/':
                     if (opB == 0) 
-                        throw Exception(5);
+                        throw Exception(5); // divisão por 0
                     res = opA / opB;
                     break;
                 case '^': 
@@ -87,21 +91,54 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             char* b = (char*) pilha.Desempilhar();
             char* a = (char*) pilha.Desempilhar();
             if (!a || !b) 
-                throw Exception(3, tk->valor);
-        
-            // converte para double (0 e 1)
-            double opA = atof(a);
-            double opB = atof(b);
+                throw Exception(3, tk->valor); // operador sem operandos suficientes
+
+            // verificação de tipo
+            bool aIsBool = ehBoolStr(a);
+            bool bIsBool = ehBoolStr(b);
             bool r = false;
 
-            if (strcmp(tk->valor, ">") == 0) r = opA > opB;
-            else if (strcmp(tk->valor, "<") == 0) r = opA < opB;
-            else if (strcmp(tk->valor, ">=") == 0) r = opA >= opB;
-            else if (strcmp(tk->valor, "<=") == 0) r = opA <= opB;
-            else if (strcmp(tk->valor, "==") == 0) r = (opA == opB);
-            else if (strcmp(tk->valor, "!=") == 0) r = (opA != opB);
-            else throw Exception(2, tk->valor);
+            // operadores que só aceitam números
+            if (strcmp(tk->valor, ">") == 0 || strcmp(tk->valor, "<") == 0 || strcmp(tk->valor, ">=") == 0 || strcmp(tk->valor, "<=") == 0) {
+                if (aIsBool || bIsBool)
+                    throw Exception(4, tk->valor); // tipo incompatível (operadores relacionais aplicados a booleanos)
+                
+                // converte para double
+                double opA = atof(a);
+                double opB = atof(b);
 
+                if (strcmp(tk->valor, ">") == 0) r = opA > opB;
+                else if (strcmp(tk->valor, "<") == 0) r = opA < opB;
+                else if (strcmp(tk->valor, ">=") == 0) r = opA >= opB;
+                else if (strcmp(tk->valor, "<=") == 0) r = opA <= opB;
+            } 
+            // operadores que permitem números ou booleanos, mas não tipos mistos
+            else if (strcmp(tk->valor, "==") == 0 || strcmp(tk->valor, "!=") == 0) {
+                 // tipo incompatível (operadores de igualdade aplicados a tipos mistos)
+                if (aIsBool != bIsBool)
+                    throw Exception(6, tk->valor);
+                
+                // booleanos
+                if (aIsBool && bIsBool) {
+                    bool opA = strToBool(a);
+                    bool opB = strToBool(b);
+                    if (strcmp(tk->valor, "==") == 0) r = (opA == opB);
+                    else r = (opA != opB);
+                } 
+                // números
+                else {
+                    double opA = atof(a);
+                    double opB = atof(b);
+                    if (strcmp(tk->valor, "==") == 0) r = (opA == opB);
+                    else r = (opA != opB);
+                }
+            } 
+            // token desconhecido
+            else {
+                throw Exception(2, tk->valor);
+            }
+
+            // empilha resultado
             pilha.Empilhar(boolToStr(r));
 
             free(a);
@@ -114,9 +151,9 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             if (strcmp(tk->valor, "!") == 0) {
                 char* v = (char*) pilha.Desempilhar();
                 if (!v) 
-                    throw Exception(3, tk->valor);
+                    throw Exception(3, tk->valor); // sem operandos suficientes
                 if (!ehBoolStr(v)) 
-                    throw Exception(4);
+                    throw Exception(4); // tipo incompatível (negação de número)
 
                 bool res = !strToBool(v);
                 pilha.Empilhar(boolToStr(res));
@@ -128,9 +165,9 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                 char* b = (char*) pilha.Desempilhar();
                 char* a = (char*) pilha.Desempilhar();
                 if (!a || !b) 
-                    throw Exception(3, tk->valor);
+                    throw Exception(3, tk->valor); // sem operandos suficientes
                 if (!ehBoolStr(a) || !ehBoolStr(b)) 
-                    throw Exception(4);
+                    throw Exception(4); // tipo incompatível (comparação lógica com números)
 
                 // converte para bool
                 bool opA = strToBool(a);
@@ -141,6 +178,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                 else if (strcmp(tk->valor, "||") == 0) res = opA || opB;
                 else throw Exception(2, tk->valor);
 
+                // empilha resultado
                 pilha.Empilhar(boolToStr(res));
                 free(a);
                 free(b);
@@ -157,9 +195,9 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
     char* resultado = (char*) pilha.Desempilhar();
 
     if (!resultado) 
-        throw Exception(7);
+        throw Exception(7); // sem resultado -> erro de formatação
     if (!pilha.EstaVazia()) 
-        throw Exception(7);
+        throw Exception(7); // sobrou tokens -> erro de formatação
 
     return resultado;
 }
