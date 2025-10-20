@@ -6,6 +6,7 @@
 #include "lexer.h"
 #include "shunting_yard.h"
 #include "evaluator.h"
+#include "exception.h"
 
 int main() {
     Lexer lexer;
@@ -74,20 +75,29 @@ int main() {
             printf("Pressione qualquer tecla para voltar ao menu principal...");
             getchar();
         }
-        catch (int e) {
-            if (e == 1) {
+        catch (Exception &ex) {
+            if (ex.code == 1) {
                 printf("\n\nErro: parênteses desbalanceados!\n");
-            } else if (e == 2) {
-                printf("\n\nErro: token desconhecido!\n");
-            } else if (e == 3) {
-                printf("\n\nErro: operador sem operandos suficientes!\n");
-            } else if (e == 4) {
-                printf("\n\nErro: tipo incompatível!\n");
-            } else if (e == 5) {
+            } else if (ex.code == 2) {
+                if (ex.token)
+                    printf("\n\nErro: token desconhecido: %s\n", ex.token);
+                else
+                    printf("\n\nErro: token desconhecido!\n");
+            } else if (ex.code == 3) {
+                if (ex.token)
+                    printf("\n\nErro: operador sem operandos suficientes: %s\n", ex.token);
+                else
+                    printf("\n\nErro: operador sem operandos suficientes!\n");
+            } else if (ex.code == 4) {
+                if (ex.token)
+                    printf("\n\nErro: tipo incompatível para operador %s\n", ex.token);
+                else
+                    printf("\n\nErro: tipo incompatível!\n");
+            } else if (ex.code == 5) {
                 printf("\n\nErro: divisão por 0!\n");
-            } else if (e == 6) {
+            } else if (ex.code == 6) {
                 printf("\n\nErro: comparação entre tipos diferentes!\n");
-            } else if (e == 7) {
+            } else if (ex.code == 7) {
                 printf("\n\nErro: expressao mal formatada!\n");
             } else {
                 printf("\n\nErro desconhecido!\n");

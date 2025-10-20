@@ -1,11 +1,12 @@
-#include "evaluator.h"
-#include "pilha.h"
-#include "fila.h"
-#include "token.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include "evaluator.h"
+#include "pilha.h"
+#include "fila.h"
+#include "token.h"
+#include "exception.h"
 
 // conversão de strings booleanas
 bool Evaluator::ehBoolStr(const char* v) {
@@ -42,7 +43,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             char* b = (char*) pilha.Desempilhar();
             char* a = (char*) pilha.Desempilhar();
             if (!a || !b) 
-                throw 3; // operador sem operandos suficientes
+                throw Exception(3, tk->valor);
 
             // converte para double
             double opA = atof(a);
@@ -61,14 +62,14 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                     break;
                 case '/':
                     if (opB == 0) 
-                        throw 5; // divisão por 0
+                        throw Exception(5);
                     res = opA / opB;
                     break;
                 case '^': 
                     res = pow(opA, opB); 
                     break;
                 default: 
-                    throw 2; // token desconhecido
+                    throw Exception(2, tk->valor);
             }
 
             // formata para string com 2 casas decimais e empilha
@@ -86,7 +87,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             char* b = (char*) pilha.Desempilhar();
             char* a = (char*) pilha.Desempilhar();
             if (!a || !b) 
-                throw 3; // operador sem operandos suficientes
+                throw Exception(3, tk->valor);
         
             // converte para double (0 e 1)
             double opA = atof(a);
@@ -99,7 +100,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             else if (strcmp(tk->valor, "<=") == 0) r = opA <= opB;
             else if (strcmp(tk->valor, "==") == 0) r = (opA == opB);
             else if (strcmp(tk->valor, "!=") == 0) r = (opA != opB);
-            else throw 2;
+            else throw Exception(2, tk->valor);
 
             pilha.Empilhar(boolToStr(r));
 
@@ -113,9 +114,9 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
             if (strcmp(tk->valor, "!") == 0) {
                 char* v = (char*) pilha.Desempilhar();
                 if (!v) 
-                    throw 3; // sem operandos
+                    throw Exception(3, tk->valor);
                 if (!ehBoolStr(v)) 
-                    throw 4; // tipo incompatível (negação de número)
+                    throw Exception(4);
 
                 bool res = !strToBool(v);
                 pilha.Empilhar(boolToStr(res));
@@ -127,9 +128,9 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                 char* b = (char*) pilha.Desempilhar();
                 char* a = (char*) pilha.Desempilhar();
                 if (!a || !b) 
-                    throw 3; // operador sem operandos suficientes
+                    throw Exception(3, tk->valor);
                 if (!ehBoolStr(a) || !ehBoolStr(b)) 
-                    throw 4; // tipo incompatível (comparação lógica com números)
+                    throw Exception(4);
 
                 // converte para bool
                 bool opA = strToBool(a);
@@ -138,7 +139,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
 
                 if (strcmp(tk->valor, "&&") == 0) res = opA && opB;
                 else if (strcmp(tk->valor, "||") == 0) res = opA || opB;
-                else throw 2;
+                else throw Exception(2, tk->valor);
 
                 pilha.Empilhar(boolToStr(res));
                 free(a);
@@ -148,7 +149,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
 
         // token desconhecido
         else {
-            throw 2;
+            throw Exception(2, tk->valor);
         }
     }
 
@@ -156,9 +157,9 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
     char* resultado = (char*) pilha.Desempilhar();
 
     if (!resultado) 
-        throw 7; // expressão mal-formada
+        throw Exception(7);
     if (!pilha.EstaVazia()) 
-        throw 7; // sobrou item
+        throw Exception(7);
 
     return resultado;
 }

@@ -5,6 +5,7 @@
 #include "token.h"
 #include "pilha.h"
 #include "fila.h"
+#include "exception.h"
 
 // retorna a precedência do operador (classifica por faixas numéricas)
 int ShuntingYard::precedencia(Token* t) {
@@ -53,7 +54,7 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
             // impede operador duplo isolado
             if ((strcmp(atual->valor, "|") == 0 || strcmp(atual->valor, "&") == 0) &&
                 (i + 1 >= tamanho || strcmp(entrada[i + 1].valor, atual->valor) != 0)) {
-                throw 2; // operador inválido (desconhecido)
+                throw Exception(2, atual->valor); // operador inválido (desconhecido)
             }
 
             // verifica as precidências dos operadores
@@ -98,11 +99,11 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
                 }
             }
             if (!achouAbre)
-                throw 1; // parênteses desbalanceados
+                throw Exception(1); // parênteses desbalanceados
         }
 
         else {
-            throw 2; // token desconhecido
+            throw Exception(2, (char*)atual->valor); // token desconhecido
         }
     }
 
@@ -110,7 +111,7 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
     while (!operadores.EstaVazia()) {
         Token* topo = (Token*) operadores.Desempilhar();
         if (topo->tipo == Token::PARENTESES)
-            throw 1; // parênteses desbalanceados
+            throw Exception(1); // parênteses desbalanceados
         saida->Enfileirar(topo);
     }
 }

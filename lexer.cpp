@@ -1,8 +1,9 @@
-#include "lexer.h"
 #include <stdlib.h>
 #include <string.h>
+#include "lexer.h"
 #include "fila.h"
 #include "pilha.h"
+#include "exception.h"
 
 bool Lexer::ehNumero(char caracter) {
     char numeros[11] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'};
@@ -78,7 +79,7 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
 
             // verifica se há espaços entre números
             if (ehNumero(anterior) && ehNumero(proximo)) {
-                throw 7;
+                throw Exception(7);
             }
             // verifica se há espaços entre operadores relacionais ou lógicos duplos
             if (
@@ -89,7 +90,7 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
                 (anterior == '&' && proximo == '&') ||
                 (anterior == '|' && proximo == '|')
             ) {
-                throw 7;
+                throw Exception(7);
             }
             // começou a ler booleano e encontrou espaço -> erro 
             if (lendoBooleano > 0) {
@@ -121,19 +122,19 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
                 }
             } 
             else {
-                throw 7;
+                throw Exception(7);
             }
         } 
         // adicionou letra inválida dentro do booleano
         else {
             if (lendoBooleano > 0) {
-                throw 7;
+                throw Exception(7);
             }
         }
 
         // não faz parte de caracteres válidos
         if (!(ehNumero(atual) || ehAritmetico(atual) || ehRelacional(atual) || ehLogico(atual) || ehParenteses(atual) || ehLetraBool(atual))) {
-            throw 2;
+            throw Exception(2, (char*)atual);
         }
 
         saida[j++] = atual;
@@ -211,7 +212,7 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 i++;
             } 
             else {
-                throw 2; // token desconhecido
+                throw Exception(2, (char*)c); // token desconhecido
             }
 
             (*tokens)[(*tamanho)++] = tk;
@@ -235,7 +236,7 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 i++;
             }
             else {
-                throw 2;
+                throw Exception(2, (char*)c); // token desconhecido
             }
 
             (*tokens)[(*tamanho)++] = tk;
@@ -265,7 +266,7 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
 
         // caractere inválido
         else {
-            throw 2;
+            throw Exception(2, (char*)c);
         }
 
         // aumenta o vetor se ultrapassar a capacidade
