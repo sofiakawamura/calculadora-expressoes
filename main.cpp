@@ -26,7 +26,6 @@ int main() {
 
         // remover espaços
         lexer.removeEspacos(entrada, expressao);
-        printf("Sem espacos: %s\n", expressao);
 
         // tokenizar
         Token* tokens;
@@ -42,8 +41,28 @@ int main() {
         printf("Resultado: %s\n", resultado);
     }
     catch (int e) {
+        if (e == 1) {
+            printf("Erro: parênteses desbalanceados!\n");
+            return 1;
+        }
         if (e == 2) {
             printf("Erro: token desconhecido!\n");
+            return 1;
+        }
+        if (e == 3) {
+            printf("Erro: operador sem operandos suficientes!\n");
+            return 1;
+        }
+        if (e == 4) {
+            printf("Erro: tipo incompatível!\n");
+            return 1;
+        }
+        if (e == 5) {
+            printf("Erro: divisão por 0!\n");
+            return 1;
+        }
+        if (e == 6) {
+            printf("Erro: comparação entre tipos diferentes!\n");
             return 1;
         }
         if (e == 7) {

@@ -51,7 +51,7 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
             // validação extra: impede operador duplo isolado (ex: "true | false")
             if ((strcmp(atual->valor, "|") == 0 || strcmp(atual->valor, "&") == 0) &&
                 (i + 1 >= tamanho || strcmp(entrada[i + 1].valor, atual->valor) != 0)) {
-                throw 2;
+                throw 3; // operador sem operandos suficientes
             }
 
             while (!operadores.EstaVazia()) {
@@ -89,18 +89,18 @@ void ShuntingYard::shuntingYard(Token* entrada, int tamanho, Fila* saida) {
                 }
             }
             if (!achouAbre)
-                throw 1;
+                throw 1; // parênteses desbalanceados
         }
 
         else {
-            throw 2;
+            throw 2; // token desconhecido
         }
     }
 
     while (!operadores.EstaVazia()) {
         Token* topo = (Token*) operadores.Desempilhar();
         if (topo->tipo == Token::PARENTESES)
-            throw 1;
+            throw 1; // parênteses desbalanceados
         saida->Enfileirar(topo);
     }
 }

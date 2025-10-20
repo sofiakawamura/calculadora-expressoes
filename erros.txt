@@ -1,7 +1,7 @@
 1 - parênteses desbalanceados
 2 - token desconhecido
 3 - operador sem operandos suficientes 
-4 - tipo incompatível
+4 - tipo incompatível (ex. && aplicado a números)
 5 - divisão por 0
-6 - comparação entre tipos diferentes
-7 - expressão mal-formada 
+6 - comparação entre tipos diferentes (== ou !=)
+7 - expressão mal-formada (sobra valores na pilha)
