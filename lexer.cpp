@@ -94,7 +94,7 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
             }
             // começou a ler booleano e encontrou espaço -> erro 
             if (lendoBooleano > 0) {
-                throw 2;
+                throw Exception(2, possivelBool);
             }
             i++;
             continue;
@@ -187,7 +187,7 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 i += 5;
             } 
             else {
-                throw 2;
+                throw Exception(2, (char*)c); // token desconhecido
             }
         }
 

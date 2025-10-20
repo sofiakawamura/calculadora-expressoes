@@ -102,6 +102,11 @@ int main() {
             } else {
                 printf("\n\nErro desconhecido!\n");
             }
+
+            if (ex.token) {
+                free(ex.token);
+            }
+            
             printf("Pressione qualquer tecla para voltar ao menu principal...");
             getchar();
         }

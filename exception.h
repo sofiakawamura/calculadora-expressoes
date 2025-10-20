@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// struct exceção para erros de avaliação
 struct Exception {
     int code; // código de erro
     char* token; // token associado (se houver)
