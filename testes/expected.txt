@@ -1,11 +1,11 @@
-25
+25.00
 Erro: expressao mal fomatada!
 Erro: parênteses desbalanceados!
 Erro: divisão por 0!
-Erro: token desconhecido!
-Erro: operador sem operandos suficientes!
+Erro: token desconhecido: a
+Erro: operador sem operandos suficientes: +
 true
 false
 true
 Erro: comparação entre tipos diferentes!
-Erro: tipo incompatível!
+Erro: tipo incompatíve para operador &&

@@ -153,7 +153,7 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
 
     while (expressao[i] != '\0') {
         char c = expressao[i];
-        
+
         // números
         if (ehNumero(c)) {
             int inicio = i;
@@ -191,8 +191,8 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
             }
         }
 
-        // relacionais
-        else if (ehRelacional(c)) {
+        // relacionais (sem ! unário)
+        else if ((c == '>' ) || (c == '<') || (c == '=') || (c == '!' && expressao[i+1] == '=')) {
             Token tk;
             tk.tipo = Token::RELACIONAL;
 
@@ -210,9 +210,6 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 tk.valor[0] = c;
                 tk.valor[1] = '\0';
                 i++;
-            } 
-            else {
-                throw Exception(2, (char*)c); // token desconhecido
             }
 
             (*tokens)[(*tamanho)++] = tk;
@@ -223,17 +220,17 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
             Token tk;
             tk.tipo = Token::LOGICO;
 
-            if (c == '&' && expressao[i+1] == '&') {
+            if (c == '!') {
+                tk.valor = strdup("!");
+                i++;
+            }
+            else if (c == '&' && expressao[i+1] == '&') {
                 tk.valor = strdup("&&");
                 i += 2;
             }
             else if (c == '|' && expressao[i+1] == '|') {
                 tk.valor = strdup("||");
                 i += 2;
-            }
-            else if (c == '!') {
-                tk.valor = strdup("!");
-                i++;
             }
             else {
                 throw Exception(2, (char*)c); // token desconhecido

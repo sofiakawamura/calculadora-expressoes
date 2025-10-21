@@ -153,7 +153,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                 if (!v) 
                     throw Exception(3, tk->valor); // sem operandos suficientes
                 if (!ehBoolStr(v)) 
-                    throw Exception(4); // tipo incompatível (negação de número)
+                    throw Exception(4, tk->valor); // tipo incompatível (negação de número)
 
                 bool res = !strToBool(v);
                 pilha.Empilhar(boolToStr(res));
@@ -167,7 +167,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
                 if (!a || !b) 
                     throw Exception(3, tk->valor); // sem operandos suficientes
                 if (!ehBoolStr(a) || !ehBoolStr(b)) 
-                    throw Exception(4); // tipo incompatível (comparação lógica com números)
+                    throw Exception(4, tk->valor); // tipo incompatível (comparação lógica com números)
 
                 // converte para bool
                 bool opA = strToBool(a);
