@@ -134,7 +134,8 @@ void Lexer::removeEspacos(char* entrada, char* saida) {
 
         // não faz parte de caracteres válidos
         if (!(ehNumero(atual) || ehAritmetico(atual) || ehRelacional(atual) || ehLogico(atual) || ehParenteses(atual) || ehLetraBool(atual))) {
-            throw Exception(2, (char*)atual);
+            char buffer[2] = {atual, '\0'}; // converte para string
+            throw Exception(2, buffer);
         }
 
         saida[j++] = atual;
@@ -187,7 +188,8 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 i += 5;
             } 
             else {
-                throw Exception(2, (char*)c); // token desconhecido
+                char buffer[2] = {c, '\0'};
+                throw Exception(2, buffer); // token desconhecido
             }
         }
 
@@ -233,7 +235,8 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
                 i += 2;
             }
             else {
-                throw Exception(2, (char*)c); // token desconhecido
+                char buffer[2] = {c, '\0'};
+                throw Exception(2, buffer); // token desconhecido
             }
 
             (*tokens)[(*tamanho)++] = tk;
@@ -263,7 +266,8 @@ void Lexer::tokenizacao(char* expressao, Token** tokens, int* tamanho) {
 
         // caractere inválido
         else {
-            throw Exception(2, (char*)c);
+            char buffer[2] = {c, '\0'};
+            throw Exception(2, buffer);
         }
 
         // aumenta o vetor se ultrapassar a capacidade

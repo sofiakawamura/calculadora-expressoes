@@ -175,7 +175,7 @@ char *Lista::NaFormaDeString() const
     strcpy(R, "");
     for (pNo P = this->Inicio; P != NULL; P = P->Prox)
     {
-        sprintf(S, "%d", P->Info);
+        snprintf(S, sizeof(S), "%p", P->Info);
         strcat(R, S);
         strcat(R, P->Prox == NULL ? "" : ", ");
     }

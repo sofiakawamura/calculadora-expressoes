@@ -78,7 +78,7 @@ char* Evaluator::avaliarPosfixa(Fila* filaPosfixa) {
 
             // formata para string com 2 casas decimais e empilha
             char buffer[32];
-            sprintf(buffer, "%.2f", res);
+            snprintf(buffer, sizeof(buffer), "%.2f", res);
             pilha.Empilhar(strdup(buffer));
 
             free(a);
