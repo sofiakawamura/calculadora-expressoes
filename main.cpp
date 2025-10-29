@@ -52,7 +52,7 @@ int main() {
             // exibir infixa
             printf("\nInfixa: ");
             for (int i = 0; i < tamanho; i++) {
-                printf("%s", tokens[i].valor);
+                printf("%s ", tokens[i].valor);
             }
 
             // shunting yard
@@ -64,7 +64,7 @@ int main() {
             Fila copiaSaida = saida;
             while (!copiaSaida.EstaVazia()) {
                 Token* token = (Token*) copiaSaida.Desenfileirar();
-                printf("%s", token->valor);
+                printf("%s ", token->valor);
             }
 
             // resultado
@@ -75,31 +75,39 @@ int main() {
             printf("Pressione qualquer tecla para voltar ao menu principal...");
             getchar();
         }
+        // exibir erros tratados e exibir token com erro (se houver)
         catch (Exception &ex) {
             if (ex.code == 1) {
                 printf("\n\nErro: parênteses desbalanceados!\n");
-            } else if (ex.code == 2) {
+            } 
+            else if (ex.code == 2) {
                 if (ex.token)
                     printf("\n\nErro: token desconhecido: %s\n", ex.token);
                 else
                     printf("\n\nErro: token desconhecido!\n");
-            } else if (ex.code == 3) {
+            } 
+            else if (ex.code == 3) {
                 if (ex.token)
                     printf("\n\nErro: operador sem operandos suficientes: %s\n", ex.token);
                 else
                     printf("\n\nErro: operador sem operandos suficientes!\n");
-            } else if (ex.code == 4) {
+            } 
+            else if (ex.code == 4) {
                 if (ex.token)
                     printf("\n\nErro: tipo incompatível para operador %s\n", ex.token);
                 else
                     printf("\n\nErro: tipo incompatível!\n");
-            } else if (ex.code == 5) {
+            } 
+            else if (ex.code == 5) {
                 printf("\n\nErro: divisão por 0!\n");
-            } else if (ex.code == 6) {
+            } 
+            else if (ex.code == 6) {
                 printf("\n\nErro: comparação entre tipos diferentes!\n");
-            } else if (ex.code == 7) {
+            } 
+            else if (ex.code == 7) {
                 printf("\n\nErro: expressao mal formatada!\n");
-            } else {
+            } 
+            else {
                 printf("\n\nErro desconhecido!\n");
             }
             
